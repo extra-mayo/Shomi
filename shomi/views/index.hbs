@@ -1,0 +1,7 @@
+<h1>{{title}}</h1>
+{{#if user}}
+    <div>You're currently logged in as: <a href='/dashboard'>{{user.username}}</a></div>
+{{else}}
+    <a href="/login">login</a> or
+    <a href="/register">register</a>
+{{/if}}

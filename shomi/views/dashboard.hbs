@@ -1,0 +1,48 @@
+<h2>{{username}}'s Dashboard</h2>
+
+<nav id="navigation">
+    <a href="/dashboard">Home</a>
+    <a href="/edit">Edit</a>
+    <a href="/add">Add</a>
+    <a href="/settings">Settings</a>
+    <a href="/faq">FAQ</a>
+</nav>
+
+<header id="head">
+    <form method="post" action="/prev" class="navButton">
+        <input type="submit" value="prev">
+    </form>
+
+    <h1 id="weekday">{{weekday}}</h1>
+
+    <form method="post" action="/next" class="navButton">
+        <input type="submit" value="next">
+    </form>
+</header>
+
+
+{{#if movies}}
+<table>
+    <tr>
+        <th>Shows</th>
+        <th>Links</th>
+    </tr>
+
+    {{#each movies}}
+        <tr>
+            <td>{{title}} {{printSeasonEpisode this}}</td>
+            <td>
+                <input type="submit" value="IMDb">
+                <input type="submit" value="Subs">
+                <input type="submit" value="DL">
+            </td>
+
+        </tr>
+    {{/each}}
+</table>
+<a href="/add">Add more?</a>
+{{else}}
+    <p>You have nothing listed!</p>
+    <a href="/add">Add some?</a>
+{{/if}}
+
