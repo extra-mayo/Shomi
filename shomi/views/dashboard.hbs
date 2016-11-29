@@ -32,9 +32,12 @@
         <tr>
             <td>{{title}} {{printSeasonEpisode this}}</td>
             <td>
-                <input type="submit" value="IMDb">
-                <input type="submit" value="Subs">
-                <input type="submit" value="DL">
+                <button type="button" class="imdb" value={{_id}}>IMDb</button>
+                <button type="button" class="subs" value={{_id}}>Subs</button>
+                <button type="button" class="DL" value={{id}}>DL</button>
+                <!--<input type="button" class="imdb" value="IMDb">-->
+                <!--<input type="button" name=value="Subs">-->
+                <!--<input type="button" value="DL">-->
             </td>
 
         </tr>
@@ -46,3 +49,10 @@
     <a href="/add">Add some?</a>
 {{/if}}
 
+
+<!-- jQuery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<!-- Latest compiled and minified Bootstrap JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Custom script -->
+<script src="/javascripts/links.js"></script>

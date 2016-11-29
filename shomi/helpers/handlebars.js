@@ -2,7 +2,7 @@ function hbsHelpers(hbs){
 
 //handlebar registerhelper
     hbs.registerHelper('printSeasonEpisode', function(movie){
-        console.log("helper: ", movie);
+        // console.log("helper: ", movie);
         if (movie.season == -1 && movie.episode == -1){
             return "";
         }

@@ -34,7 +34,7 @@ var date = new DateObject();
 router.get('/', function (req, res, next) {
     if (req.user) {
         res.redirect('dashboard');
-        console.log("user: ", req.user);
+        // console.log("user: ", req.user);
     }
     else {
         res.render('index', {title: 'shomi'});
@@ -89,7 +89,7 @@ router.get('/dashboard', function (req, res, next) {
                 path: 'movies',
                 match: {day: date.getWeekday()}
             }).exec(function (err, user) {
-            console.log(user.movies);
+            // console.log(user.movies);
             // var showSchedule = !!req.user && req.user.username == user.username;
             res.render('dashboard', {
                 weekday: date.getWeekday(),
@@ -114,15 +114,15 @@ router.get('/add', function (req, res, next) {
 });
 
 router.post('/add', function (req, res, next) {
-    console.log(req.body.seasonNumber == null);
-    if (req.body.seasonNumber == null){
+    // console.log(req.body.seasonNumber == null);
+    if (req.body.seasonNumber == ""){
         req.body.seasonNumber = -1;
     }
-    if (req.body.episodeNumber == null){
+    if (req.body.episodeNumber == ""){
         req.body.episodeNumber = -1;
     }
 
-    console.log("body!: ", req.body);
+    // console.log("body!: ", req.body);
 
     var movie = new Movie({
         title: req.body.showTitle,
@@ -156,5 +156,23 @@ router.post('/prev', function (req, res, next) {
     res.redirect('/dashboard');
 });
 
+//get movie based on ID
+router.get('/api/movies/IDtoShow', function(req, res){
+
+    var movieFilter = {},
+        searchExists = false;
+    console.log("query ID:", req.query.id);
+    if (req.query.id) {
+        movieFilter._id = req.query.id;
+        searchExists = true;
+    }
+
+    Movie.find(movieFilter, function (err, movies, count) {
+        console.log("movies by id: ", movies);
+        res.json(movies);
+    });
+
+
+});
 
 module.exports = router;
