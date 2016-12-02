@@ -1,7 +1,35 @@
-<h1>{{title}}</h1>
+<!--<h1>{{title}}</h1>-->
 {{#if user}}
     <div>You're currently logged in as: <a href='/dashboard'>{{user.username}}</a></div>
 {{else}}
-    <a href="/login">login</a> or
-    <a href="/register">register</a>
+
+    <div class="site-wrapper">
+
+        <div class="site-wrapper-inner">
+
+            <div class="cover-container">
+
+                <div class="inner cover">
+                    <h1 class="cover-heading">shomi</h1>
+
+                    <p class="lead">
+                        <a href="/login">login</a> <span id="or"> or </span>
+                        <a href="/register">register</a></p>
+                    <p class="lead">
+                        <!--<a href="#" class="btn btn-lg btn-default">Learn more</a>-->
+                    </p>
+                </div>
+
+                <!--<div class="mastfoot">-->
+                    <!--<div class="inner">-->
+                        <!--<p>Cover template for <a href="http://getbootstrap.com">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+            </div>
+
+        </div>
+
+    </div>
+
 {{/if}}

@@ -1,11 +1,39 @@
-<h2>Register</h2>
-{{message}}
-<form action="/register" method="POST">
-    <div>
-        <label>Username:</label> <input type="text" name="username">
+
+<div class="site-wrapper">
+
+    <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+            <div class="inner cover">
+                <h1 class="cover-heading">shomi</h1>
+
+                <form action="/register" method="POST">
+                    <legend>register</legend>
+                    {{#if message}}
+                    <p id="error">{{message}}</p>
+                    {{/if}}
+                    <div>
+                        <input type="text" name="username" placeholder="username">
+                    </div>
+                    <div>
+                        <input type="password" name="password" placeholder="password">
+                    </div>
+                    <input type="submit" value="Register" class="inputButton">
+                </form>
+
+                    <!--<a href="#" class="btn btn-lg btn-default">Learn more</a>-->
+
+            </div>
+
+            <!--<div class="mastfoot">-->
+            <!--<div class="inner">-->
+            <!--<p>Cover template for <a href="http://getbootstrap.com">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>-->
+            <!--</div>-->
+            <!--</div>-->
+
+        </div>
+
     </div>
-    <div>
-        <label>Password:</label> <input type="password" name="password">
-    </div>
-    <input type="submit" value="Register">
-</form>
+
+</div>

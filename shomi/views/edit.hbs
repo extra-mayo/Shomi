@@ -1,5 +1,135 @@
 <h2>EDIT</h2>
 <a href="/dashboard">Home</a>
 <a href="/edit">Edit</a>
-<a href="/add">Add</a>
+<a href="/settings">Settings</a>
+<a href="/faq">FAQ</a>
+
+
+<form method="POST" action="/add">
+    <legend>ADD</legend>
+    <label for="showTitle">Show's Title:</label>
+    <input type="text" id="showTitle" name="showTitle" required>
+    <br>
+
+
+    <label for="showWeekday">Day: </label>
+    <select name="showWeekday" id="showWeekday">
+        <option value="Monday" id="monday" required >Monday</option>
+        <option value="Tuesday" id="tuesday">Tuesday</option>
+        <option value="Wednesday" id="wednesday">Wednesday</option>
+        <option value="Thursday" id="thursday">Thursday</option>
+        <option value="Friday" id="friday">Friday</option>
+        <option value="Saturday" id="saturday">Saturday</option>
+        <option value="Sunday" id="sunday">Sunday</option>
+    </select>
+
+    <!--<label for="monday">Day:</label>-->
+    <!--<input type="radio" name="showWeekday" id="monday" value="Monday"><label for="monday" required>Monday</label>-->
+    <!--<input type="radio" name="showWeekday" id="tuesday" value="Tuesday"><label for="tuesday">Tuesday</label>-->
+    <!--<input type="radio" name="showWeekday" id="wednesday" value="Wednesday"><label for="wednesday">Wednesday</label>-->
+    <!--<input type="radio" name="showWeekday" id="thursday" value="Thursday"><label for="thursday">Thursday</label>-->
+    <!--<input type="radio" name="showWeekday" id="friday" value="Friday"><label for="friday">Friday</label>-->
+    <!--<input type="radio" name="showWeekday" id="saturday" value="Saturday"><label for="saturday">Saturday</label>-->
+    <!--<input type="radio" name="showWeekday" id="sunday" value="Sunday"><label for="sunday">Sunday</label>-->
+    <br>
+
+    <label for="seasonNumber">Season:</label>
+    <input type="number" name="seasonNumber" id="seasonNumber">
+
+    <br>
+
+    <label for="episodeNumber">Episode:</label>
+    <input type="number" name="episodeNumber" id="episodeNumber">
+
+    <br>
+    <input type="submit">
+</form>
+
+<!-- SCHEDULE VIEWER! -->
+
+{{#if username}}
+
+    <table>
+
+        <tr>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+        </tr>
+        <tr>
+            <!-- Monday -->
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Monday"}}
+                        <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Tuesday"}}
+                        <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Wednesday"}}
+                            <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Thursday"}}
+                            <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Friday"}}
+                            <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Saturday"}}
+                            <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+            <td>
+                <ul>
+                    {{#each movies}}
+                        {{#ifDay this.day "Sunday"}}
+                            <li>{{title}} {{printSeasonEpisode this}}</li>
+                        {{/ifDay}}
+                    {{/each}}
+                </ul>
+            </td>
+
+        </tr>
+
+
+
+    </table>
+{{/if}}
 

@@ -4,22 +4,23 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var User = mongoose.model('User');
 var Movie = mongoose.model('Movie');
+var addic7edApi = require('addic7ed-api');
 
-function DateObject(){
-    this.originalDate = new Date();
+function DateObject() {
+    this.originalDate = new Date(Date.now());
     this.newDate = new Date(this.originalDate);
     this.selectedNext = false;
 
     var weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    this.getWeekday = function (date){
-        if (date){
+    this.getWeekday = function (date) {
+        if (date) {
             return weekdayList[date.getDay()];
         }
         return weekdayList[this.newDate.getDay()];
     };
 
-    this.prev = function(){
+    this.prev = function () {
         this.newDate.setDate(this.newDate.getDate() - 1);
     };
     this.next = function () {
@@ -70,7 +71,7 @@ router.post('/register', function (req, res) {
         req.body.password, function (err, user) {
             if (err) {
                 // NOTE: error? send message back to registration...
-                res.render('register', {message: 'Your username or password is already taken'});
+                res.render('register', {message: 'Your username or password is already taken.'});
             } else {
                 // NOTE: once you've registered, you should be logged in automatically
                 // ...so call authenticate if there's no error
@@ -82,6 +83,7 @@ router.post('/register', function (req, res) {
 });
 
 router.get('/dashboard', function (req, res, next) {
+    date = new DateObject();
     if (req.user) {
         User
             .findOne({username: req.user.username})
@@ -104,21 +106,53 @@ router.get('/dashboard', function (req, res, next) {
     }
 });
 
-router.get('/add', function (req, res, next) {
+router.get('/edit', function (req, res, next) {
+    // if (req.user) {
+    //     res.render('edit');
+    // }
+    // else {
+    //     res.redirect('/');
+    // }
+
     if (req.user) {
-        res.render('add');
+
+        User
+            .findOne({username: req.user.username})
+            .populate({
+                path: 'movies',
+            })
+            .exec(function (err, user) {
+                console.log("hey!!: ", user);
+                // console.log(user.movies);
+                // var showSchedule = !!req.user && req.user.username == user.username;
+                res.render('edit', {
+                    // monday: user.monday,
+                    // tuesday: user.tuesday,
+                    // wednesday: user.wednesday,
+                    // thursday: user.thursday,
+                    // friday: user.friday,
+                    // saturday: user.saturday,
+                    // sunday: user.sunday,
+                    // showSchedule: showSchedule,
+                    movies: user.movies,
+                    username: user.username
+                });
+            });
     }
     else {
         res.redirect('/');
     }
-});
+
+
+})
+;
 
 router.post('/add', function (req, res, next) {
     // console.log(req.body.seasonNumber == null);
-    if (req.body.seasonNumber == ""){
+    if (req.body.seasonNumber == "" || req.body.episodeNumber == null) {
         req.body.seasonNumber = -1;
     }
-    if (req.body.episodeNumber == ""){
+    if (req.body.episodeNumber == "" || req.body.episodeNumber == null) {
         req.body.episodeNumber = -1;
     }
 
@@ -137,7 +171,7 @@ router.post('/add', function (req, res, next) {
         // saved image to add to the user's image array
         req.user.movies.push(savedMovie._id);
         req.user.save(function (err, savedUser, count) {
-            res.redirect('/add');
+            res.redirect('/edit');
         });
     });
 
@@ -157,7 +191,7 @@ router.post('/prev', function (req, res, next) {
 });
 
 //get movie based on ID
-router.get('/api/movies/IDtoShow', function(req, res){
+router.get('/api/movies/IDtoShow', function (req, res) {
 
     var movieFilter = {},
         searchExists = false;
@@ -167,12 +201,24 @@ router.get('/api/movies/IDtoShow', function(req, res){
         searchExists = true;
     }
 
-    Movie.find(movieFilter, function (err, movies, count) {
+    Movie.find(movieFilter, function (err, movies) {
         console.log("movies by id: ", movies);
         res.json(movies);
     });
-
-
 });
+
+router.get('/api/movies/subs', function (req, res) {
+    console.log(req.query);
+    var title = decodeURI(req.query.title);
+
+    addic7edApi.search(title, 1, 1).then(function (subtitlesList) {
+        var subInfo = subtitlesList[0];
+        if (subInfo) {
+            console.log(subInfo.referer);
+            res.json(subInfo);
+        }
+    });
+});
+
 
 module.exports = router;
