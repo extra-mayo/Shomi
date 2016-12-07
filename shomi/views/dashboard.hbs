@@ -1,57 +1,71 @@
-<h2>{{username}}'s Dashboard</h2>
+<div class="site-wrapper">
+    <div class="top">
+        <h2>{{username}}'s dashboard</h2>
+        <input type="hidden" id="userID" value={{id}}>
 
-<nav id="navigation">
-    <a href="/dashboard">Home</a>
-    <a href="/edit">Edit</a>
-    <a href="/settings">Settings</a>
-    <a href="/faq">FAQ</a>
-</nav>
+        <nav id="navigation">
+            <a href="/dashboard" class="nav-link">Home</a> |
+            <a href="/edit" class="nav-link">Edit</a> |
+            <!--<a href="/settings" class="nav-link">Settings</a> |-->
+            <a href="/faq" class="nav-link">FAQ</a>
+        </nav>
+    </div>
 
-<header id="head">
-    <form method="post" action="/prev" class="navButton">
-        <input type="submit" value="prev">
-    </form>
+    <div class="bottom">
+        <header id="head">
 
-    <h1 id="weekday">{{weekday}}</h1>
+            <button class="prev">Prev</button>
+            <!--<form method="post" action="/prev" class="dayNavForm">-->
+            <!--<input type="submit" value="prev">-->
+            <!--</form>-->
 
-    <form method="post" action="/next" class="navButton">
-        <input type="submit" value="next">
-    </form>
-</header>
+            <h1 id="weekday">{{weekday}}</h1>
+
+            <button class="next">Next</button>
+
+            <!--<form method="post" action="/next" class="dayNavForm">-->
+            <!--<input type="submit" value="next">-->
+            <!--</form>-->
+        </header>
+
+        <article id="todaysSchedule">
+            {{#if movies}}
+                <table id="scheduleTable">
+                    <tbody>
+                    <tr>
+                        <th>Shows</th>
+                        <th>Links</th>
+                        <th>Extra</th>
+                    </tr>
+
+                    {{#each movies}}
+                        <tr>
+                            <td>{{title}} {{printSeasonEpisode this}}</td>
+                            <td>
+                                <button type="button" class="imdb" value={{_id}}>IMDb</button>
+                                <button type="button" class="subs" value={{_id}}>Subs</button>
+                                <button type="button" class="DL" value={{id}}>DL</button>
+                                <!--<input type="button" class="imdb" value="IMDb">-->
+                                <!--<input type="button" name=value="Subs">-->
+                                <!--<input type="button" value="DL">-->
+                            </td>
+                            <td class="latestEpisode">
+                                <input type="hidden" value={{id}}>
+
+                            </td>
+
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+                <a href="/edit">Add more?</a>
+            {{else}}
+                <p>You have nothing listed!</p>
+                <a href="/edit">Add some?</a>
+            {{/if}}
+        </article>
 
 
-{{#if movies}}
-<table>
-    <tr>
-        <th>Shows</th>
-        <th>Links</th>
-    </tr>
+    </div>
 
-    {{#each movies}}
-        <tr>
-            <td>{{title}} {{printSeasonEpisode this}}</td>
-            <td>
-                <button type="button" class="imdb" value={{_id}}>IMDb</button>
-                <button type="button" class="subs" value={{_id}}>Subs</button>
-                <button type="button" class="DL" value={{id}}>DL</button>
-                <!--<input type="button" class="imdb" value="IMDb">-->
-                <!--<input type="button" name=value="Subs">-->
-                <!--<input type="button" value="DL">-->
-            </td>
-
-        </tr>
-    {{/each}}
-</table>
-<a href="/edit">Add more?</a>
-{{else}}
-    <p>You have nothing listed!</p>
-    <a href="/edit">Add some?</a>
-{{/if}}
-
-
-<!-- jQuery CDN -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-<!-- Latest compiled and minified Bootstrap JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-<!-- Custom script -->
-<script src="/javascripts/links.js"></script>
+</div>

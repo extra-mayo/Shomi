@@ -2,8 +2,8 @@
 
 ##What is it?
 It's a web version of my chrome extension Show Tracker. 
-It contains even more features such as download link, subtitle DL link, automatic season and episode number update, etc. 
-And it's created via node and express.
+It contains even more features such as download link, subtitle DL link,  season and episode number, etc. 
+Created via node and express.
 
 ##How to run?
 

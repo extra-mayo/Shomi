@@ -16,7 +16,11 @@ a {
   display: inline;
 }
 
-.navButton{
+#head {
+    padding-top: 5px;
+}
+
+.dayNavForm{
     display: inline;
 }
 
@@ -36,7 +40,7 @@ td {
     padding: 10px;
 }
 
-td:hover {background-color: #abacad}
+td:hover {background-color: rgba(171, 172, 173, 0.4)}
 
 ul {
     list-style-type: none;
@@ -54,7 +58,7 @@ legend {
 }
 
 
-form {
+.stylizeForm {
     position: relative;
     width: 250px;
     margin: 0 auto;
@@ -68,7 +72,7 @@ form {
     border-right-color: rgba(60,60,60,.4);
 }
 
-form input {
+.stylizeForm input {
     width: 212px;
     border: 1px solid;
     border-bottom-color: rgba(255,255,255,.5);
@@ -84,7 +88,7 @@ form input {
     margin-bottom: 19px;
 }
 
-form input:focus {
+.stylizeForm input:focus {
     background-color: rgba(0,0,0,.4);
 }
 
@@ -94,4 +98,74 @@ form input:focus {
 
 #error {
     color: red;
+}
+
+.top {
+    /*background-color: white;*/
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.bottom {
+    /*background-color: grey;*/
+    margin-left: 100px;
+    margin-right: 100px;
+    /*margin-top: 50px;*/
+    padding-left: 50px;
+    padding-right: 50px;
+
+
+    background: rgba(130,130,130,.3);
+    /*padding: 20px 22px;*/
+    border: 1px solid;
+    border-radius: 10px;
+    border-top-color: rgba(255,255,255,.4);
+    border-left-color: rgba(255,255,255,.4);
+    border-bottom-color: rgba(60,60,60,.4);
+    border-right-color: rgba(60,60,60,.4);
+
+}
+
+.bottom button, input[type="submit"] {
+    /*color: black;*/
+    background-color: #b3cccc;
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    -webkit-border-radius:5px;
+    -moz-border-radius:5px;
+    border-radius:5px;
+    /*margin-left: 50px;*/
+    /*margin-right: 50px;*/
+}
+
+.bottom input[type="submit"]{
+    /*padding-bottom: 5px;*/
+    /*padding-left: 10px;*/
+    /*padding-right: 10px;*/
+    margin-left: 50px;
+    margin-right: 50px;
+    margin-bottom: 5px;
+}
+
+.bottom button {
+    background-color: transparent;
+    color: red;
+    padding: 0px;
+}
+
+#showWeekday {
+    color: black;
+}
+
+#scheduleView {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    /*white-space: nowrap;;*/
+    /*display: table;*/
+    text-align: left;
+    font-size: 10px;
 }

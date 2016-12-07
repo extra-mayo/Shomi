@@ -6,29 +6,20 @@ var User = mongoose.model('User');
 var Movie = mongoose.model('Movie');
 var addic7edApi = require('addic7ed-api');
 
-function DateObject() {
+function OriginalDate() {
     this.originalDate = new Date(Date.now());
-    this.newDate = new Date(this.originalDate);
     this.selectedNext = false;
 
-    var weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    this.weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-    this.getWeekday = function (date) {
-        if (date) {
-            return weekdayList[date.getDay()];
-        }
-        return weekdayList[this.newDate.getDay()];
-    };
-
-    this.prev = function () {
-        this.newDate.setDate(this.newDate.getDate() - 1);
-    };
-    this.next = function () {
-        this.newDate.setDate(this.newDate.getDate() + 1);
-    }
 }
 
-var date = new DateObject();
+OriginalDate.prototype.getWeekday = function (date) {
+    if (date) {
+        return this.weekdayList[date.getDay()];
+    }
+    return this.weekdayList[this.originalDate.getDay()];
+};
 
 
 /* GET home page. */
@@ -83,7 +74,7 @@ router.post('/register', function (req, res) {
 });
 
 router.get('/dashboard', function (req, res, next) {
-    date = new DateObject();
+    var date = new OriginalDate();
     if (req.user) {
         User
             .findOne({username: req.user.username})
@@ -91,12 +82,14 @@ router.get('/dashboard', function (req, res, next) {
                 path: 'movies',
                 match: {day: date.getWeekday()}
             }).exec(function (err, user) {
+            console.log("user id?", user);
             // console.log(user.movies);
             // var showSchedule = !!req.user && req.user.username == user.username;
             res.render('dashboard', {
                 weekday: date.getWeekday(),
                 // showSchedule: showSchedule,
                 movies: user.movies,
+                id: user._id,
                 username: user.username
             });
         });
@@ -107,33 +100,19 @@ router.get('/dashboard', function (req, res, next) {
 });
 
 router.get('/edit', function (req, res, next) {
-    // if (req.user) {
-    //     res.render('edit');
-    // }
-    // else {
-    //     res.redirect('/');
-    // }
 
     if (req.user) {
 
         User
             .findOne({username: req.user.username})
             .populate({
-                path: 'movies',
+                path: 'movies'
             })
             .exec(function (err, user) {
                 console.log("hey!!: ", user);
                 // console.log(user.movies);
                 // var showSchedule = !!req.user && req.user.username == user.username;
                 res.render('edit', {
-                    // monday: user.monday,
-                    // tuesday: user.tuesday,
-                    // wednesday: user.wednesday,
-                    // thursday: user.thursday,
-                    // friday: user.friday,
-                    // saturday: user.saturday,
-                    // sunday: user.sunday,
-                    // showSchedule: showSchedule,
                     movies: user.movies,
                     username: user.username
                 });
@@ -144,8 +123,7 @@ router.get('/edit', function (req, res, next) {
     }
 
 
-})
-;
+});
 
 router.post('/add', function (req, res, next) {
     // console.log(req.body.seasonNumber == null);
@@ -178,16 +156,26 @@ router.post('/add', function (req, res, next) {
 });
 
 
-router.post('/next', function (req, res, next) {
-
-    date.next();
-    res.redirect('/dashboard');
-
+router.get('/faq', function (req, res) {
+    res.render('faq');
 });
 
-router.post('/prev', function (req, res, next) {
-    date.prev();
-    res.redirect('/dashboard');
+
+router.get('/api/movies/weekday', function (req, res) {
+
+    var movieFilter = {};
+    console.log("request query!", req.query);
+
+    if (req.query.day) {
+        movieFilter.day = req.query.day;
+        movieFilter.user = req.query.user;
+    }
+
+    Movie.find(movieFilter, function (err, movies) {
+        res.json(movies);
+    });
+
+
 });
 
 //get movie based on ID
@@ -220,5 +208,14 @@ router.get('/api/movies/subs', function (req, res) {
     });
 });
 
+router.post('/api/movies/delete', function (req, res) {
+    console.log("here!", req.body.movieID);
+    Movie.remove({_id: req.body.movieID}, function (err, movies) {
+        if (err) {
+            console.log("movie removal error!");
+        }
+    });
+
+});
 
 module.exports = router;
