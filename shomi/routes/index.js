@@ -21,6 +21,15 @@ OriginalDate.prototype.getWeekday = function (date) {
     return this.weekdayList[this.originalDate.getDay()];
 };
 
+OriginalDate.prototype.getReadableDate = function(date){
+    var month = this.originalDate.getMonth() + 1;
+    if (month == 13){
+        month = 1;
+    }
+
+    return month + "/" + this.originalDate.getDate() + "/" + this.originalDate.getFullYear();
+
+};
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -29,12 +38,12 @@ router.get('/', function (req, res, next) {
         // console.log("user: ", req.user);
     }
     else {
-        res.render('index', {title: 'shomi'});
+        res.render('indexTWO', {title: 'shomi'});
     }
 });
 
 router.get('/login', function (req, res, next) {
-    res.render('login');
+    res.render('loginTWO');
 });
 
 
@@ -45,7 +54,7 @@ router.post('/login', function (req, res, next) {
                 res.redirect('/dashboard');
             });
         } else {
-            res.render('login', {message: 'Your login or password is incorrect.'});
+            res.render('loginTWO', {message: 'Your login or password is incorrect.'});
         }
     })(req, res, next);
     // NOTE: notice that this form of authenticate returns a function that
@@ -54,7 +63,7 @@ router.post('/login', function (req, res, next) {
 });
 
 router.get('/register', function (req, res, next) {
-    res.render('register');
+    res.render('registerTWO');
 });
 
 router.post('/register', function (req, res) {
@@ -62,7 +71,7 @@ router.post('/register', function (req, res) {
         req.body.password, function (err, user) {
             if (err) {
                 // NOTE: error? send message back to registration...
-                res.render('register', {message: 'Your username or password is already taken.'});
+                res.render('registerTWO', {message: 'Your username or password is already taken.'});
             } else {
                 // NOTE: once you've registered, you should be logged in automatically
                 // ...so call authenticate if there's no error
@@ -85,12 +94,13 @@ router.get('/dashboard', function (req, res, next) {
             console.log("user id?", user);
             // console.log(user.movies);
             // var showSchedule = !!req.user && req.user.username == user.username;
-            res.render('dashboard', {
+            res.render('dashboardTWO', {
                 weekday: date.getWeekday(),
                 // showSchedule: showSchedule,
                 movies: user.movies,
                 id: user._id,
-                username: user.username
+                username: user.username,
+                date: date.getReadableDate()
             });
         });
     }
@@ -101,8 +111,7 @@ router.get('/dashboard', function (req, res, next) {
 
 router.get('/edit', function (req, res, next) {
 
-    if (req.user) {
-
+  if (req.user) {
         User
             .findOne({username: req.user.username})
             .populate({
@@ -112,7 +121,7 @@ router.get('/edit', function (req, res, next) {
                 console.log("hey!!: ", user);
                 // console.log(user.movies);
                 // var showSchedule = !!req.user && req.user.username == user.username;
-                res.render('edit', {
+                res.render('editTWO', {
                     movies: user.movies,
                     username: user.username
                 });
@@ -134,7 +143,7 @@ router.post('/add', function (req, res, next) {
         req.body.episodeNumber = -1;
     }
 
-    // console.log("body!: ", req.body);
+    console.log("body!: ", req.body);
 
     var movie = new Movie({
         title: req.body.showTitle,
@@ -144,20 +153,29 @@ router.post('/add', function (req, res, next) {
         user: req.user._id
 
     });
-    movie.save(function (err, savedMovie, count) {
-        // NOTE: we're grabbing the image id from the
-        // saved image to add to the user's image array
-        req.user.movies.push(savedMovie._id);
-        req.user.save(function (err, savedUser, count) {
-            res.redirect('/edit');
+
+    console.log("movie!", movie);
+        movie.save(function (err, savedMovie, count) {
+            // NOTE: we're grabbing the image id from the
+            // saved image to add to the user's image array
+            req.user.movies.push(savedMovie._id);
+            req.user.save(function (err, savedUser, count) {
+                res.redirect('/edit');
+            });
         });
-    });
+
 
 });
 
 
 router.get('/faq', function (req, res) {
-    res.render('faq');
+    if (req.user){
+        res.render('faqTWO', {
+        username: req.user.username});
+    }
+    else {
+        res.redirect('/');
+    }
 });
 
 

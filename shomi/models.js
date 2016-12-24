@@ -13,7 +13,7 @@ var User = new mongoose.Schema({
 // movies
 // * includes name, the weekday user will expect it to air, season number, and episode number
 var Movie = new mongoose.Schema({
-    title: {type: String, required: true},
+    title: {type: String, required: [true, '{PATH} is required.']},
     day: {type: String, required: true},
     season: {type: Number},
     episode: {type: Number},

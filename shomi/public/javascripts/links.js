@@ -1,13 +1,23 @@
 $(document).ready(main);
 
-function DateConstructor(weekday) {
-    this.currentDay = weekday;
+function validateForm(){
+    var x = document.querySelector("#showTitle").value;
+    if (x == ""){
+        document.querySelector("#error").innerText = "Please enter valid show title.";
+        return false;
+    }
+}
 
+
+function DateConstructor(weekday, date) {
+    this.currentDay = weekday;
+    this.currentDate = new Date(date);
+    // console.log(this.currentDate);
     this.weekdayList = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
     this.currentDayIndex = -1;
 
-    this.fulfillTheRequirements = this.weekdayList.filter(function (ele, index) {
+    this.weekDayName = this.weekdayList.filter(function (ele, index) {
         console.log(typeof ele, typeof weekday);
         if (ele.includes(weekday)) {
             this.currentDayIndex = index;
@@ -16,8 +26,7 @@ function DateConstructor(weekday) {
         return false;
     }, this);
     console.log(this.currentDayIndex);
-
-
+    console.log(this.weekDayName);
 }
 
 DateConstructor.prototype.nextDay = function (index) {
@@ -33,6 +42,27 @@ DateConstructor.prototype.prevDay = function (index) {
     }
     return this.weekdayList[index - 1];
 };
+
+DateConstructor.prototype.nextDate = function (date) {
+    this.currentDate.setDate(this.currentDate.getDate() + 1);
+    var month = this.currentDate.getMonth() + 1;
+    if (month == 13) {
+        month = 1;
+    }
+
+    return month + "/" + this.currentDate.getDate() + "/" + this.currentDate.getFullYear();
+};
+
+DateConstructor.prototype.prevDate = function (date) {
+    this.currentDate.setDate(this.currentDate.getDate() - 1);
+    var month = this.currentDate.getMonth() + 1;
+    if (month == 13) {
+        month = 1;
+    }
+
+    return month + "/" + this.currentDate.getDate() + "/" + this.currentDate.getFullYear();
+};
+
 
 function main() {
 
@@ -259,12 +289,17 @@ function nextList(event) {
     event.preventDefault();
 
     var day = document.querySelector("#weekday").textContent;
+    var date = document.querySelector("#date").textContent;
     var user = document.querySelector("#userID").value;
 
 
-    var currentDay = new DateConstructor(day);
+    var currentDay = new DateConstructor(day, date);
     var newDay = currentDay.nextDay(currentDay.currentDayIndex);
+    var newDate = currentDay.nextDate();
+
     var sendText = "day=" + newDay + "&user=" + user;
+
+    document.querySelector("#date").textContent = newDate;
 
     var req = new XMLHttpRequest();
     req.open('GET', "/api/movies/weekday?" + sendText, true);
@@ -283,81 +318,71 @@ function nextList(event) {
             var table = document.querySelector("#scheduleTable");
 
             var tableBody = document.createElement("tbody");
-            table.replaceChild(tableBody, table.childNodes[1]);
-
-            var tableRow = document.createElement("tr");
-
-            var tableHeader = document.createElement("th");
-            var header1 = document.createTextNode("Shows");
-            tableHeader.appendChild(header1);
-
-            var tableHeader2 = document.createElement("th");
-            var header2 = document.createTextNode("Links");
-            tableHeader2.appendChild(header2);
-
-            var tableHeader3 = document.createElement("th");
-            var header3 = document.createTextNode("Extra");
-            tableHeader3.appendChild(header3);
-
-
-            tableRow.appendChild(tableHeader);
-            tableRow.appendChild(tableHeader2);
-            tableRow.appendChild(tableHeader3);
-
-            tableBody.appendChild(tableRow);
+            table.replaceChild(tableBody, table.childNodes[3]);
 
             var data = JSON.parse(req.responseText);
-
-            data.forEach(function (obj) {
+            if (data.length == 0) {
                 var tableRow = document.createElement("tr");
 
                 var tableData = document.createElement("td");
-                tableData.appendChild(document.createTextNode(obj.title + " " + seasonEpisode(obj)));
-
-                var tableData2 = document.createElement("td");
-
-                var IMDBbutton = document.createElement("button");
-                IMDBbutton.appendChild(document.createTextNode("IMDb"));
-                IMDBbutton.setAttribute("type", "button");
-                IMDBbutton.setAttribute("class", "imdb");
-                IMDBbutton.setAttribute("value", obj._id);
-
-                tableData2.appendChild(IMDBbutton);
-
-                var SubsButton = document.createElement("button");
-                SubsButton.appendChild(document.createTextNode("Subs"));
-                SubsButton.setAttribute("type", "button");
-                SubsButton.setAttribute("class", "subs");
-                SubsButton.setAttribute("value", obj._id);
-
-                tableData2.appendChild(SubsButton);
-
-                var DLButton = document.createElement("button");
-                DLButton.appendChild(document.createTextNode("DL"));
-                DLButton.setAttribute("type", "button");
-                DLButton.setAttribute("class", "DL");
-                DLButton.setAttribute("value", obj._id);
-
-                tableData2.appendChild(DLButton);
-
-                var latestEpisode = document.createElement("td");
-                latestEpisode.setAttribute("class", "latestEpisode");
-
-
-                var hiddenInput = document.createElement("input");
-                hiddenInput.setAttribute("type", "hidden");
-                hiddenInput.setAttribute("value", obj._id);
-                latestEpisode.appendChild(hiddenInput);
-
-
+                tableData.appendChild(document.createTextNode("You have nothing listed!"));
                 tableRow.appendChild(tableData);
-                tableRow.appendChild(tableData2);
-                tableRow.appendChild(latestEpisode);
-
                 tableBody.appendChild(tableRow);
+            }
+            else {
 
-            });
+                data.forEach(function (obj) {
+                    var tableRow = document.createElement("tr");
+
+                    var tableData = document.createElement("td");
+                    tableData.appendChild(document.createTextNode(obj.title + " " + seasonEpisode(obj)));
+
+                    var tableData2 = document.createElement("td");
+
+                    var IMDBbutton = document.createElement("button");
+                    IMDBbutton.appendChild(document.createTextNode("IMDb"));
+                    IMDBbutton.setAttribute("type", "button");
+                    IMDBbutton.setAttribute("class", "imdb btn btn-info");
+                    IMDBbutton.setAttribute("value", obj._id);
+
+                    tableData2.appendChild(IMDBbutton);
+
+                    var SubsButton = document.createElement("button");
+                    SubsButton.appendChild(document.createTextNode("Subs"));
+                    SubsButton.setAttribute("type", "button");
+                    SubsButton.setAttribute("class", "subs btn btn-info");
+                    SubsButton.setAttribute("value", obj._id);
+
+                    tableData2.appendChild(SubsButton);
+
+                    var DLButton = document.createElement("button");
+                    DLButton.appendChild(document.createTextNode("DL"));
+                    DLButton.setAttribute("type", "button");
+                    DLButton.setAttribute("class", "DL btn btn-info");
+                    DLButton.setAttribute("value", obj._id);
+
+                    tableData2.appendChild(DLButton);
+
+                    var latestEpisode = document.createElement("td");
+                    latestEpisode.setAttribute("class", "latestEpisode");
+
+
+                    var hiddenInput = document.createElement("input");
+                    hiddenInput.setAttribute("type", "hidden");
+                    hiddenInput.setAttribute("value", obj._id);
+                    latestEpisode.appendChild(hiddenInput);
+
+
+                    tableRow.appendChild(tableData);
+                    tableRow.appendChild(tableData2);
+                    tableRow.appendChild(latestEpisode);
+
+                    tableBody.appendChild(tableRow);
+
+                });
+            }
             getLatestInfoVersionTwo();
+
             AddEventListenersToButtons();
 
         }
@@ -368,14 +393,18 @@ function nextList(event) {
 
 function prevList(event) {
     event.preventDefault();
-
     var day = document.querySelector("#weekday").textContent;
+    var date = document.querySelector("#date").textContent;
     var user = document.querySelector("#userID").value;
 
 
-    var currentDay = new DateConstructor(day);
+    var currentDay = new DateConstructor(day, date);
     var newDay = currentDay.prevDay(currentDay.currentDayIndex);
+    var newDate = currentDay.prevDate();
+
     var sendText = "day=" + newDay + "&user=" + user;
+
+    document.querySelector("#date").textContent = newDate;
 
     var req = new XMLHttpRequest();
     req.open('GET', "/api/movies/weekday?" + sendText, true);
@@ -394,80 +423,70 @@ function prevList(event) {
             var table = document.querySelector("#scheduleTable");
 
             var tableBody = document.createElement("tbody");
-            table.replaceChild(tableBody, table.childNodes[1]);
 
-            var tableRow = document.createElement("tr");
-
-            var tableHeader = document.createElement("th");
-            var header1 = document.createTextNode("Shows");
-            tableHeader.appendChild(header1);
-
-            var tableHeader2 = document.createElement("th");
-            var header2 = document.createTextNode("Links");
-            tableHeader2.appendChild(header2);
-
-            var tableHeader3 = document.createElement("th");
-            var header3 = document.createTextNode("Extra");
-            tableHeader3.appendChild(header3);
-
-
-            tableRow.appendChild(tableHeader);
-            tableRow.appendChild(tableHeader2);
-            tableRow.appendChild(tableHeader3);
-
-            tableBody.appendChild(tableRow);
+            table.replaceChild(tableBody, table.childNodes[3]);
 
             var data = JSON.parse(req.responseText);
-
-            data.forEach(function (obj) {
+            if (data.length == 0) {
                 var tableRow = document.createElement("tr");
 
                 var tableData = document.createElement("td");
-                tableData.appendChild(document.createTextNode(obj.title + " " + seasonEpisode(obj)));
-
-                var tableData2 = document.createElement("td");
-
-                var IMDBbutton = document.createElement("button");
-                IMDBbutton.appendChild(document.createTextNode("IMDb"));
-                IMDBbutton.setAttribute("type", "button");
-                IMDBbutton.setAttribute("class", "imdb");
-                IMDBbutton.setAttribute("value", obj._id);
-
-                tableData2.appendChild(IMDBbutton);
-
-                var SubsButton = document.createElement("button");
-                SubsButton.appendChild(document.createTextNode("Subs"));
-                SubsButton.setAttribute("type", "button");
-                SubsButton.setAttribute("class", "subs");
-                SubsButton.setAttribute("value", obj._id);
-
-                tableData2.appendChild(SubsButton);
-
-                var DLButton = document.createElement("button");
-                DLButton.appendChild(document.createTextNode("DL"));
-                DLButton.setAttribute("type", "button");
-                DLButton.setAttribute("class", "DL");
-                DLButton.setAttribute("value", obj._id);
-
-                tableData2.appendChild(DLButton);
-
-                var latestEpisode = document.createElement("td");
-                latestEpisode.setAttribute("class", "latestEpisode");
-
-
-                var hiddenInput = document.createElement("input");
-                hiddenInput.setAttribute("type", "hidden");
-                hiddenInput.setAttribute("value", obj._id);
-                latestEpisode.appendChild(hiddenInput);
-
-
+                tableData.appendChild(document.createTextNode("You have nothing listed!"));
                 tableRow.appendChild(tableData);
-                tableRow.appendChild(tableData2);
-                tableRow.appendChild(latestEpisode);
-
                 tableBody.appendChild(tableRow);
+            }
+            else {
 
-            });
+                data.forEach(function (obj) {
+                    var tableRow = document.createElement("tr");
+
+                    var tableData = document.createElement("td");
+                    tableData.appendChild(document.createTextNode(obj.title + " " + seasonEpisode(obj)));
+
+                    var tableData2 = document.createElement("td");
+
+                    var IMDBbutton = document.createElement("button");
+                    IMDBbutton.appendChild(document.createTextNode("IMDb"));
+                    IMDBbutton.setAttribute("type", "button");
+                    IMDBbutton.setAttribute("class", "imdb btn btn-info");
+                    IMDBbutton.setAttribute("value", obj._id);
+
+                    tableData2.appendChild(IMDBbutton);
+
+                    var SubsButton = document.createElement("button");
+                    SubsButton.appendChild(document.createTextNode("Subs"));
+                    SubsButton.setAttribute("type", "button");
+                    SubsButton.setAttribute("class", "subs btn btn-info");
+                    SubsButton.setAttribute("value", obj._id);
+
+                    tableData2.appendChild(SubsButton);
+
+                    var DLButton = document.createElement("button");
+                    DLButton.appendChild(document.createTextNode("DL"));
+                    DLButton.setAttribute("type", "button");
+                    DLButton.setAttribute("class", "DL btn btn-info");
+                    DLButton.setAttribute("value", obj._id);
+
+                    tableData2.appendChild(DLButton);
+
+                    var latestEpisode = document.createElement("td");
+                    latestEpisode.setAttribute("class", "latestEpisode");
+
+
+                    var hiddenInput = document.createElement("input");
+                    hiddenInput.setAttribute("type", "hidden");
+                    hiddenInput.setAttribute("value", obj._id);
+                    latestEpisode.appendChild(hiddenInput);
+
+
+                    tableRow.appendChild(tableData);
+                    tableRow.appendChild(tableData2);
+                    tableRow.appendChild(latestEpisode);
+
+                    tableBody.appendChild(tableRow);
+
+                });
+            }
             getLatestInfoVersionTwo();
             AddEventListenersToButtons();
 
